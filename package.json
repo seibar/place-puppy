@@ -1,0 +1,20 @@
+{
+  "name": "place-puppy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "npm run clean && babel src/server --out-dir dist",
+    "clean": "rm -rf dist",
+    "start": "babel-watch ./src/server/index.js"
+  },
+  "author": "AJ Rabe <aj.rabe@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "2.154.0",
+    "babel-cli": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-watch": "2.0.7",
+    "express": "4.16.2"
+  }
+}
