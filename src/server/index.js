@@ -1,16 +1,20 @@
 import http from 'http';
 import express from 'express';
-import { S3 } from 'aws-sdk';
-import home from './home';
-import { puppies } from './puppies.json';
+import { homeView } from './views';
+import { ImageController } from './controllers';
 
 const app = express();
 const server = http.createServer(app);
-const s3 = new S3();
 
 // Config
 const port = process.env.PORT || 3000;
 const maxAge = process.env.RANDOM_MAX_AGE || 60 * 60 * 24;
+
+const imageController = new ImageController({ maxAge });
+
+process.on('uncaughtException', function(err) {
+	console.log('Caught exception: ' + err);
+});
 
 app.use(function (req, res, next) {
 	res.removeHeader("X-Powered-By");
@@ -18,38 +22,16 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', (req, res) => {
-	return res.status(200).send(home());
+	return res.status(200).send(homeView());
 });
 
-app.get('/:width/:height', (req, res) => {
-	const width = parseFloat(req.params.width);
-	const height = parseFloat(req.params.height);
-	if (!Number.isInteger(width) || !Number.isInteger(height)) {
-		return res.sendStatus(400);
-	}
+app.get('/:width/:height', (req, res, next) => imageController.getRandomPuppy(req, res, next));
+app.get('/:id/:width/:height', (req, res, next) => imageController.getPuppyById(req, res, next));
 
-	// TODO: resize image dimensions, cache them in S3. https://github.com/lovell/sharp
-	// TODO: max image dimensions
-	// TODO: id endpoint
-
-	const ifModifiedSince = new Date(req.get('If-Modified-Since'));
-	const now = new Date();
-	const age = now - ifModifiedSince;
-	if (age < maxAge * 1000) {
-		return res.sendStatus(304);
-	}
-
-	res.setHeader('Content-Type', 'image/jpeg');
-	res.setHeader('Cache-Control', ` max-age=${maxAge}, public`);
-	res.setHeader('Expires', new Date(Date.now() + maxAge * 1000).toUTCString());
-	res.setHeader('Last-Modified', new Date().toUTCString());
-	const randomPuppyFilename = puppies[Math.floor(Math.random() * puppies.length)];
-
-	const puppyStream = s3.getObject({
-		Bucket: 'place-puppy',
-		Key: randomPuppyFilename
-	}).createReadStream();
-	puppyStream.pipe(res);
+// Error handling
+app.use(function (error, req, res, next) {
+	console.log(error);
+	return res.status(500).send('Error');
 });
 
 server.listen(port);

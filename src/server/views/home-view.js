@@ -1,4 +1,4 @@
-export default () => `
+export const homeView = () => `
 <!doctype html>
 <html>
 	<head>
