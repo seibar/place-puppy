@@ -48,7 +48,22 @@ class ImageService {
 		});
 	}
 
+	static isValidDimensions (width, height) {
+		if (!Number.isInteger(width)) return false;
+		if (!Number.isInteger(height)) return false;
+		if (width > 2000) return false;
+		if (height > 2000) return false;
+		if (width < 1) return false;
+		if (height < 1) return false;
+
+		return true;
+	}
+
 	async fetchImage (imageId, width, height) {
+		if (!ImageService.isValidDimensions(width, height)) {
+			return Promise.reject(new Error('Invalid image dimensions'));
+		}
+
 		const filename = `${imageId}-${width}x${height}.jpg`;
 
 		try {
@@ -58,8 +73,6 @@ class ImageService {
 			// Better way to check if image exists than catching a 403?
 			// Is it better to be optimistic that the image will exist, or should there be a headObject before the get to ensure it exists?
 			// Should the known good image paths be cached to avoid extra head checks? How to handle if the cache becomes invalid due to image being deleted from server?
-
-			// TODO: validate image dimensions (even though that should have happened already upstream)
 
 			if (err.statusCode === 403) {
 				// Image does not exist. Need to create one with the given dimensions and save it.

@@ -2,6 +2,7 @@ import http from 'http';
 import express from 'express';
 import { homeView } from './views';
 import { ImageController } from './controllers';
+import images from './images.json';
 
 const app = express();
 const server = http.createServer(app);
@@ -22,7 +23,7 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', (req, res) => {
-	return res.status(200).send(homeView());
+	return res.status(200).send(homeView({ title: 'place a puppy', imageIds: images.puppies }));
 });
 
 app.get('/:width/:height', (req, res, next) => imageController.getRandomPuppy(req, res, next));

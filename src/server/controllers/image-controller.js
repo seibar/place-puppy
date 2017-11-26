@@ -12,7 +12,7 @@ class ImageController {
 		this.maxAge = maxAge; // 1 day
 	}
 
-	_isModifiedSince (req) {
+	_isNotModified (req) {
 		const ifModifiedSince = new Date(req.get('If-Modified-Since'));
 		const now = new Date();
 		const age = now - ifModifiedSince;
@@ -42,17 +42,21 @@ class ImageController {
 	}
 
 	async _getRandom (bucket, req, res) {
-		if (this._isModifiedSince(req)) {
+		if (this._isNotModified(req)) {
 			return res.sendStatus(304);
 		}
 
-		if (!this._isValidDimensions(req)) {
+		const width = parseFloat(req.params.width);
+		const height = parseFloat(req.params.height);
+
+		if (!ImageService.isValidDimensions(width, height)) {
 			return res.sendStatus(400);
 		}
 
 		this._setHeaders(res);
 		const imageId = bucket[Math.floor(Math.random() * bucket.length)];
-		const image = await this._fetchImage(imageId, req.params.width, req.params.height, res);
+
+		const image = await this._fetchImage(imageId, width, height, res);
 		res.send(image);
 	}
 
@@ -64,30 +68,33 @@ class ImageController {
 			return res.sendStatus(404);
 		}
 		
-		if (this._isModifiedSince(req)) {
+		if (this._isNotModified(req)) {
 			return res.sendStatus(304);
 		}
 
-		if (!this._isValidDimensions(req)) {
+		const width = parseFloat(req.params.width);
+		const height = parseFloat(req.params.height);
+
+		if (!ImageService.isValidDimensions(width, height)) {
 			return res.sendStatus(400);
 		}
 
 		this._setHeaders(res);
-		const image = await this._fetchImage(imageId, parseFloat(req.params.width), parseFloat(req.params.height), res);
+		const image = await this._fetchImage(imageId, width, height, res);
 		res.send(image);
 	}
 
-	getRandomPuppy (req, res, next) {
+	async getRandomPuppy (req, res, next) {
 		try {
-			this._getRandom(images.puppies, req, res);
+			await this._getRandom(images.puppies, req, res);
 		} catch (err) {
 			next(err);
 		}
 	}
 
-	getPuppyById (req, res, next) {
+	async getPuppyById (req, res, next) {
 		try {
-			this._getById(images.puppies, req, res);
+			await this._getById(images.puppies, req, res);
 		} catch (err) {
 			next(err);
 		}
