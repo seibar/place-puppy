@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "npm run clean && babel src/server --out-dir dist && cp src/server/images.json dist",
+    "build": "npm run clean && babel src/server --out-dir dist && cp package.json src/server/images.json dist && npm install --only=production --prefix dist",
     "clean": "rm -rf dist",
     "start": "AWS_PROFILE=place-puppy babel-watch ./src/server/server.js"
   },
