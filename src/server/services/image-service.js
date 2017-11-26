@@ -1,5 +1,5 @@
 import { S3 } from 'aws-sdk';
-import sharp from 'sharp';
+import Jimp from 'jimp';
 
 const S3_BUCKET = 'place-puppy';
 
@@ -48,6 +48,19 @@ class ImageService {
 		});
 	}
 
+	_resizeImage (baseImageBuffer, width, height) {
+		return new Promise ((resolve, reject) => {
+			Jimp.read(baseImageBuffer, function (err, image) {
+				if (err) {
+					reject(err);
+				} else {
+					image.cover(width, height, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
+					image.getBuffer(Jimp.MIME_JPEG, (err, resized) => resolve(resized));
+				}
+			})
+		});
+	}
+
 	static isValidDimensions (width, height) {
 		if (!Number.isInteger(width)) return false;
 		if (!Number.isInteger(height)) return false;
@@ -78,7 +91,7 @@ class ImageService {
 				// Image does not exist. Need to create one with the given dimensions and save it.
 				try {
 					const baseImage = await this._fetchImageFromS3(`${imageId}.jpg`);
-					const resized = await sharp(baseImage).resize(width, height).toBuffer();
+					const resized = await this._resizeImage(baseImage, width, height);
 
 					try {
 						this._uploadImageToS3(resized, filename);
