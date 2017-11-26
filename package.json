@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "npm run clean && babel src/server --out-dir dist",
+    "build": "npm run clean && babel src/server --out-dir dist && cp src/server/images.json dist",
     "clean": "rm -rf dist",
-    "start": "AWS_PROFILE=place-puppy babel-watch ./src/server/index.js"
+    "start": "AWS_PROFILE=place-puppy babel-watch ./src/server/server.js"
   },
   "author": "AJ Rabe <aj.rabe@gmail.com>",
   "license": "MIT",
