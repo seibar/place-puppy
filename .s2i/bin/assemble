@@ -2,6 +2,7 @@
 
 echo 'assembling place-puppy'
 pwd
+cd /opt/app-root
 ls -al
 
 npm install
