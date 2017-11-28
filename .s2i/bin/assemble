@@ -2,6 +2,7 @@
 
 echo 'assembling place-puppy'
 pwd
+ls -al
 
 npm install
 npm run build
