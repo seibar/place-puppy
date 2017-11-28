@@ -4,13 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "npm run clean && babel src/server --out-dir dist && cp src/server/images.json package.json dist",
+    "build": "npm run clean && babel src/server --out-dir dist && cp src/server/images.json package.json dist && npm install --only=production --prefix dist",
     "clean": "rm -rf dist",
-    "dev": "AWS_PROFILE=place-puppy babel-watch ./src/server/server.js",
-    "start": "node dist/server.js"
+    "start": "AWS_PROFILE=place-puppy babel-watch ./src/server/server.js"
   },
   "author": "AJ Rabe <aj.rabe@gmail.com>",
   "license": "MIT",
+  "repository": "https://github.com/seibar/place-puppy.git",
   "dependencies": {
     "aws-sdk": "2.154.0",
     "express": "4.16.2",
