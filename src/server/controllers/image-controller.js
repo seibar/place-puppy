@@ -2,14 +2,9 @@ import { ImageService } from '../services';
 import images from '../images.json';
 
 class ImageController {
-
-	// TODO: resize image dimensions, cache them in S3. https://github.com/lovell/sharp
-	// TODO: max image dimensions
-	// TODO: id endpoint
-
 	constructor ({ maxAge = 86400 }) {
 		this.imageService = new ImageService();
-		this.maxAge = maxAge; // 1 day
+		this.maxAge = maxAge;
 	}
 
 	_isNotModified (req) {
