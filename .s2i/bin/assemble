@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo 'assembling place-puppy'
+pwd
+
+npm install
+npm run build
+
+ls -al
