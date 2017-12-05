@@ -1,6 +1,3 @@
 #!/bin/bash
 
-echo 'running place-puppy'
-pwd
-
 node dist/server.js

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo 'assembling place-puppy'
 cp -Rf /tmp/src/. ./
 
 npm install

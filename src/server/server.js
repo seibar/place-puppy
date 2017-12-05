@@ -17,6 +17,8 @@ process.on('uncaughtException', function(err) {
 	console.log('Caught exception: ' + err);
 });
 
+app.enable('trust proxy');
+
 app.use(function (req, res, next) {
 	res.removeHeader("X-Powered-By");
 	next();

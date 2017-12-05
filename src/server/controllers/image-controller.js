@@ -1,5 +1,8 @@
-import { ImageService } from '../services';
+import { ImageService, Analytics } from '../services';
 import images from '../images.json';
+
+// TODO: multi-tenancy with separate tracking IDs
+const GA_TID = 'UA-110217086-1';
 
 class ImageController {
 	constructor ({ maxAge = 86400 }) {
@@ -51,6 +54,16 @@ class ImageController {
 		this._setHeaders(res);
 		const imageId = bucket[Math.floor(Math.random() * bucket.length)];
 
+		Analytics.trackImageView({
+			trackingId: GA_TID,
+			clientIp: req.ip,
+			userAgent: req.get('User-Agent'),
+			isRandom: true,
+			imageId,
+			width,
+			height
+		});
+
 		const image = await this._fetchImage(imageId, width, height, res);
 		res.send(image);
 	}
@@ -73,6 +86,16 @@ class ImageController {
 		if (!ImageService.isValidDimensions(width, height)) {
 			return res.sendStatus(400);
 		}
+
+		Analytics.trackImageView({
+			trackingId: GA_TID,
+			clientIp: req.ip,
+			userAgent: req.get('User-Agent'),
+			isRandom: false,
+			imageId,
+			width,
+			height
+		});
 
 		this._setHeaders(res);
 		const image = await this._fetchImage(imageId, width, height, res);
