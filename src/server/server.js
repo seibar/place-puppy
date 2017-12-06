@@ -1,8 +1,12 @@
 import http from 'http';
 import express from 'express';
-import { homeView } from './views';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import basePage from './base-page';
+import Main from '../components/main';
 import { ImageController } from './controllers';
-import images from './images.json';
+import { TenantService } from './services';
+import tenants from './tenants';
 
 const app = express();
 const server = http.createServer(app);
@@ -10,6 +14,7 @@ const server = http.createServer(app);
 // Config
 const port = process.env.PORT || 3000;
 const maxAge = process.env.RANDOM_MAX_AGE || 60 * 60 * 24;
+const publicPath = process.env.PUBLIC_PATH || 'public';
 
 const imageController = new ImageController({ maxAge });
 
@@ -24,12 +29,19 @@ app.use(function (req, res, next) {
 	next();
 });
 
+app.use('/public', express.static(publicPath));
+
 app.get('/', (req, res) => {
-	return res.status(200).send(homeView({ title: 'place a puppy', imageIds: images.puppies }));
+	const tenant = TenantService.getTenant(req.url);
+	const body = ReactDOMServer.renderToString(<Main tenant={tenant} />);
+
+	return res.status(200).send(
+		basePage({ title: tenant.title, body })
+	);
 });
 
-app.get('/:width/:height', (req, res, next) => imageController.getRandomPuppy(req, res, next));
-app.get('/:id/:width/:height', (req, res, next) => imageController.getPuppyById(req, res, next));
+app.get('/:width/:height', (req, res, next) => imageController.getRandom(req, res, next));
+app.get('/:id/:width/:height', (req, res, next) => imageController.getById(req, res, next));
 
 // Error handling
 app.use(function (error, req, res, next) {

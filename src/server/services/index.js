@@ -1,2 +1,3 @@
 export * from './image-service';
-export * from './analytics';
+export * from './analytics-service';
+export * from './tenant-service';
