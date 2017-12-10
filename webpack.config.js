@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyes-webpack-plugin');
 
 module.exports = {
 	entry: {
-		'main': './src/components/main.js'
+		'main': './src/client/main.js'
 	},
 
 	output: {
@@ -13,7 +13,8 @@ module.exports = {
 	},
 
 	externals: {
-		'react': 'React'
+		'react': 'React',
+		'react-dom': 'ReactDOM'
 	},
 
 	module: {

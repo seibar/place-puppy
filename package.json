@@ -7,7 +7,7 @@
     "build": "npm run clean && npm run build:server",
     "build:server": "babel src/server --out-dir dist && cp src/server/images.json package.json dist && npm install --only=production --prefix dist",
     "clean": "rm -rf dist",
-    "start": "AWS_PROFILE=place-puppy PUBLIC_PATH=dist/public babel-watch ./src/server/server.js"
+    "start": "concurrently --kill-others \"webpack --watch\" \"AWS_PROFILE=place-puppy PUBLIC_PATH=dist/public babel-watch ./src/server/server.js\""
   },
   "author": "AJ Rabe <aj.rabe@gmail.com>",
   "license": "MIT",
@@ -28,6 +28,7 @@
     "babel-preset-react": "6.24.1",
     "babel-register": "6.26.0",
     "babel-watch": "2.0.7",
+    "concurrently": "3.5.1",
     "uglify-js-es6": "2.8.9",
     "uglifyes-webpack-plugin": "0.4.3",
     "webpack": "3.10.0",

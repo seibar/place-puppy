@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 	const body = ReactDOMServer.renderToString(<Main tenant={tenant} />);
 
 	return res.status(200).send(
-		basePage({ title: tenant.title, body })
+		basePage({ tenant, body })
 	);
 });
 

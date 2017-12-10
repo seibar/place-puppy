@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-class Analytics {
+class AnalyticsService {
 	static trackImageView ({ trackingId, clientIp, userAgent, isRandom, imageId, width, height }) {
 		const parameters = {
 			v: '1',
@@ -21,4 +21,4 @@ class Analytics {
 	}
 }
 
-export { Analytics };
+export { AnalyticsService };

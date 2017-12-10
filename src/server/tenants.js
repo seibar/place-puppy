@@ -1,6 +1,8 @@
 export default {
 	puppies: {
 		title: 'place a puppy',
+		name: 'puppy',
+		description: 'puppy placeholder image',
 		host: 'http://www.placepuppy.net',
 		images: [
 			"1p",
@@ -17,7 +19,12 @@ export default {
 			"12p",
 			"13p",
 			"14p",
-			"15p"
+			"15p",
+			"16p",
+			"17p",
+			"18p",
+			"19p",
+			"20p"
 		]
 	}
 };

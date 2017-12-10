@@ -1,8 +1,8 @@
-export default ({ title, body }) => `
+export default ({ tenant, body }) => `
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>${title} - placeholder images</title>
+		<title>${tenant.title} - placeholder images</title>
 		<meta charset="utf-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">		
@@ -24,16 +24,16 @@ export default ({ title, body }) => `
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 		<style>
 			body {
-				color: #52526b;
-				background-color: #EDEDED;
+				color: #4b4b54;
+				background-color: #EFEFEF;
 			}
 			input {
 				background-color: #EDEDED;
 			}
 			button.btn.btn-info {
 				cursor: pointer;
-				background-color: #52526b;
-				border-color: #52526b;
+				background-color: #4b4b54;
+				border-color: #4b4b54;
 				color: #EDEDED;
 			}
 			button.btn.btn-info:hover {
@@ -41,7 +41,7 @@ export default ({ title, body }) => `
 				border-color: #78798c;
 			}
 			.jumbotron {
-				background-color: #52526b;
+				background-color: #4b4b54;
 				color: #EDEDED;
 			}
 			.img {
@@ -50,22 +50,62 @@ export default ({ title, body }) => `
 			}
 			.carousel-control {
 				font-size: 65px;
-				color: #52526b;
+				color: #4b4b54;
 				opacity: 0.85;
 			}
 			.carousel-control:hover {
-				color: #52526b;
+				color: #4b4b54;
 				opacity: 1;
 			}
 			.carousel-control:focus {
-				color: #52526b;
+				color: #4b4b54;
 				opacity: 1;
+			}
+			.copy-icon {
+				fill: white;
+			}
+			.url .tooltip {
+				opacity: 1;
+				top: 45px;
+				right: 0;
+			}
+			.url .tooltip .arrow {
+				left: 50%;
+			}
+			.loading {
+				width: 100%;
+				height: 338px;
+				font-size: 50px;
+			}
+			.loading i {
+				position: relative;
+				top: 50%;
+				left: 50%;
+			}
+			.hidden {
+				display: none;
+			}
+			footer {
+				font-size: 14px;
+			}
+			a {
+				color: #4b4b54;
+			}
+			a:hover {
+				color: #19191d;
+			}
+			i.fa-github {
+				font-size: 18px;
 			}
 		</style>
 	</head>
 	<body>
-		${body}
+		<div id="app">
+			${body}
+		</div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.production.min.js"></script>
+		<script>window.tenant = ${JSON.stringify(tenant)}</script>
 		<script src="/public/main.js"></script>
 	</body>
 </html>
