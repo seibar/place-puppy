@@ -1,10 +1,12 @@
 #!/bin/bash
 
-echo 'pdw'
+pwd
 ls /tmp/src
 echo '1'
 cp -Rf /tmp/src/. ./
 echo '2'
+
+npm -v
 
 npm install
 npm run build
