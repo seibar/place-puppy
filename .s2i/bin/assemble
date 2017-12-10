@@ -2,5 +2,7 @@
 
 cp -Rf /tmp/src/. ./
 
+ls -al
+
 npm install
 npm run build
