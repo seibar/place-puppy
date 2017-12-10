@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "npm run clean && npm run build:server",
-    "build:server": "babel src/server --out-dir dist && cp src/server/images.json package.json dist && npm install --only=production --prefix dist",
+    "build": "npm run clean && npm run build:client && npm run build:server",
+    "build:client": "webpack",
+    "build:server": "babel src/server --out-dir dist && cp package.json dist && npm install --only=production --prefix dist",
     "clean": "rm -rf dist",
     "start": "concurrently --kill-others \"webpack --watch\" \"AWS_PROFILE=place-puppy PUBLIC_PATH=dist/public babel-watch ./src/server/server.js\""
   },
