@@ -6,20 +6,28 @@ export default ({ tenant, body }) => `
 		<meta charset="utf-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">		
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110217086-1"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-			gtag('config', 'UA-110217086-1');
-		</script>
-		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-		<script>
-			(adsbygoogle = window.adsbygoogle || []).push({
-			google_ad_client: "ca-pub-7757864177952629",
-			enable_page_level_ads: true
-			});
-		</script>
+		${
+			!!tenant.gaTrackingId ? `
+				<script async src="https://www.googletagmanager.com/gtag/js?id=${tenant.gaTrackingId}"></script>
+				<script>
+					window.dataLayer = window.dataLayer || [];
+					function gtag(){dataLayer.push(arguments);}
+					gtag('js', new Date());
+					gtag('config', '${tenant.gaTrackingId}');
+				</script>
+			` : ''
+		}
+		${
+			!!tenant.googleAdClientId ? `
+				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+				<script>
+					(adsbygoogle = window.adsbygoogle || []).push({
+					google_ad_client: "${tenant.googleAdClientId}",
+					enable_page_level_ads: true
+					});
+				</script>
+			` : ''
+		}
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 		<style>
@@ -88,10 +96,10 @@ export default ({ tenant, body }) => `
 			footer {
 				font-size: 14px;
 			}
-			a {
+			a.github {
 				color: #4b4b54;
 			}
-			a:hover {
+			a.github:hover {
 				color: #19191d;
 			}
 			i.fa-github {

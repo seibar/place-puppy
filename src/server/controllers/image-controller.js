@@ -1,8 +1,5 @@
 import { ImageService, AnalyticsService, TenantService } from '../services';
 
-// TODO: multi-tenancy with separate tracking IDs
-const GA_TID = 'UA-110217086-1';
-
 class ImageController {
 	constructor ({ maxAge = 86400 }) {
 		this.imageService = new ImageService();
@@ -53,8 +50,9 @@ class ImageController {
 		this._setHeaders(res);
 		const imageId = bucket[Math.floor(Math.random() * bucket.length)];
 
+		const tenant = TenantService.getTenant(req.hostname);
 		AnalyticsService.trackImageView({
-			trackingId: GA_TID,
+			trackingId: tenant.gaTrackingId,
 			clientIp: req.ip,
 			userAgent: req.get('User-Agent'),
 			isRandom: true,
@@ -86,8 +84,9 @@ class ImageController {
 			return res.sendStatus(400);
 		}
 
+		const tenant = TenantService.getTenant(req.hostname);
 		AnalyticsService.trackImageView({
-			trackingId: GA_TID,
+			trackingId: tenant.gaTrackingId,
 			clientIp: req.ip,
 			userAgent: req.get('User-Agent'),
 			isRandom: false,
@@ -103,7 +102,7 @@ class ImageController {
 
 	async getRandom (req, res, next) {
 		try {
-			const tenant = TenantService.getTenant(req.url);
+			const tenant = TenantService.getTenant(req.hostname);
 			await this._getRandom(tenant.images, req, res);
 		} catch (err) {
 			next(err);
@@ -112,7 +111,7 @@ class ImageController {
 
 	async getById (req, res, next) {
 		try {
-			const tenant = TenantService.getTenant(req.url);
+			const tenant = TenantService.getTenant(req.hostname);
 			await this._getById(tenant.images, req, res);
 		} catch (err) {
 			next(err);

@@ -3,10 +3,34 @@ import Url from './url';
 import Image from './image';
 import Card from './card';
 import Carousel from './carousel';
+import tenants from '../server/tenants';
 
 class Main extends React.Component {
+	constructor (props) {
+		super(props);
+		this.getOtherTenants = this.getOtherTenants.bind(this);
+	}
+
+	getOtherTenants () {
+		const thisTenant = this.props.tenant;
+
+		const otherTenants = Object.keys(tenants)
+			.filter(key => tenants[key].name !== thisTenant.name)
+			.map(key => {
+				const tenant = tenants[key];
+				return [
+					<a href={tenant.baseUrl}>{tenant.title}</a>, 
+					<br />
+				];
+			});
+
+		return otherTenants;
+	}
+
 	render () {
 		const { tenant } = this.props;
+		const otherTenants = this.getOtherTenants();
+
 		return [
 			<header className="container">
 				<h1>{tenant.title}</h1>
@@ -16,7 +40,7 @@ class Main extends React.Component {
 					<div className="row justify-content-center">
 						<Card>
 							<Image url={`/400/250`} />
-							<Url url={`${tenant.host}/400/250`} />
+							<Url url={`${tenant.baseUrl}/400/250`} />
 						</Card>
 						<Carousel tenant={tenant} />
 					</div>
@@ -34,15 +58,13 @@ class Main extends React.Component {
 				<footer className="mt-4">
 					<div className="row">
 						<div className="col-1">
-							<a href="https://github.com/seibar/place-puppy"><i className="fa fa-github"></i></a>
+							<a href="https://github.com/seibar/place-puppy" className="github"><i className="fa fa-github"></i></a>
 						</div>
-						{/* <div className="col-11 text-right">
+						<div className="col-11 text-right">
 							more placeholder images!
 							<br />
-							<a href="http://www.placecage.com/">place trump</a>
-							<br />
-							<a href="http://www.placecage.com/">place a baby</a>
-						</div> */}
+							{otherTenants}
+						</div>
 					</div>
 				</footer>
 			</div>

@@ -81,7 +81,7 @@ class Carousel extends React.Component {
 						<span className="sr-only">Next</span>
 					</a>
 				</div>
-				<Url url={`${tenant.host}${imageUrl}`} />
+				<Url url={`${tenant.baseUrl}${imageUrl}`} />
 			</Card>
 		);
 	}

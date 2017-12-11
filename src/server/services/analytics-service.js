@@ -2,6 +2,10 @@ import fetch from 'node-fetch';
 
 class AnalyticsService {
 	static trackImageView ({ trackingId, clientIp, userAgent, isRandom, imageId, width, height }) {
+		if (!trackingId) {
+			return;
+		}
+		
 		const parameters = {
 			v: '1',
 			tid: trackingId,

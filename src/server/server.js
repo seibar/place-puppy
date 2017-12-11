@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
 app.use('/public', express.static(publicPath));
 
 app.get('/', (req, res) => {
-	const tenant = TenantService.getTenant(req.url);
+	const tenant = TenantService.getTenant(req.hostname);
 	const body = ReactDOMServer.renderToString(<Main tenant={tenant} />);
 
 	return res.status(200).send(
