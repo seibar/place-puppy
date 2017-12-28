@@ -4,11 +4,6 @@ class TenantService {
 	static getTenant (hostname) {
 		const host = hostname.toLowerCase();
 
-		if (host.indexOf('openshiftapps.com') > -1) {
-			return tenants.puppies;
-		}
-
-		console.log(tenants);
 		let tenant = undefined;
 
 		Object.keys(tenants).forEach(tenantKey => {
@@ -19,7 +14,7 @@ class TenantService {
 		})
 
 		if (!tenant) {
-			throw new Error('Could not find tenant for host ' + host);
+			tenant = tenants.puppies;
 		}
 
 		return tenant;
