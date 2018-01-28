@@ -41,8 +41,11 @@ class Main extends React.Component {
 						<Card>
 							<Image url={`/400/250`} />
 							<Url url={`${tenant.baseUrl}/400/250`} />
+							a random {tenant.name} image
 						</Card>
-						<Carousel tenant={tenant} />
+						<Carousel tenant={tenant}>
+							your favorite {tenant.name} image
+						</Carousel>
 					</div>
 				</div>
 			</div>,

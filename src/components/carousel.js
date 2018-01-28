@@ -58,7 +58,7 @@ class Carousel extends React.Component {
 	}
 
 	render () {
-		const { tenant } = this.props;
+		const { tenant, children } = this.props;
 		const imageUrl = `/${tenant.images[this.state.currentImageIdx]}/400/250`;
 		const image = this.getImage(imageUrl);
 		const spinner = this.getSpinner();
@@ -82,6 +82,7 @@ class Carousel extends React.Component {
 					</a>
 				</div>
 				<Url url={`${tenant.baseUrl}${imageUrl}`} />
+				{children}
 			</Card>
 		);
 	}
