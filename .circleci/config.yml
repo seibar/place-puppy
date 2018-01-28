@@ -33,26 +33,19 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run:
-          name: Version patch and tag
-          command: | 
-            git config user.email "aj.rabe@gmail.com"
-            git config user.name "circleci"
-            npm version patch
-            git push --set-upstream origin ${CIRCLE_BRANCH}
-
       - run: npm run build
 
       - store_artifacts:
           path: ~/repo/dist
 
-workflows:
-  version: 2
-  build-and-patch:
-    jobs:
-      - build:
-          filters:
-            # ignore all tags
-            tags:
-              ignore: /.*/
+      - run:
+          name: Install deploy dependencies
+          working_directory: /
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install python-pip python-dev build-essential
+            sudo pip install awsebcli --upgrade
 
+      - run:
+          name: Deploy
+          command: eb deploy
