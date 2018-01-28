@@ -35,6 +35,7 @@ jobs:
 
       - run:
           command: | 
+            git config user.email "aj.rabe@gmail.com"
             git config user.name "circleci"
             npm version patch
             git push
