@@ -33,6 +33,8 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run: npm version patch && git push
+
       - run: npm run build
 
       - store_artifacts:
