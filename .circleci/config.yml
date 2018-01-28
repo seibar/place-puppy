@@ -33,7 +33,11 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run: npm version patch && git push
+      - run:
+          command: | 
+            git config user.name "circleci"
+            npm version patch
+            git push
 
       - run: npm run build
 
