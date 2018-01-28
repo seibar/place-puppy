@@ -5,6 +5,12 @@
 version: 2
 jobs:
   build:
+
+    filters:
+      # ignore all tags
+      tags:
+        ignore: /.*/
+
     docker:
       # specify the version you desire here
       - image: circleci/node:7
@@ -34,11 +40,12 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
+          name: Version patch and tag
           command: | 
             git config user.email "aj.rabe@gmail.com"
             git config user.name "circleci"
             npm version patch
-            git push
+            git push --set-upstream origin ${CIRCLE_BRANCH}
 
       - run: npm run build
 
