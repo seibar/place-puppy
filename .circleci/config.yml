@@ -48,9 +48,9 @@ jobs:
 
 workflows:
   version: 2
-  build_and_patch:
+  build-and-patch:
     jobs:
-      - build
+      - build:
           filters:
             # ignore all tags
             tags:
