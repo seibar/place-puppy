@@ -32,5 +32,16 @@ export default {
 		images: [ 
 			"1t", "2t", "3t", "4t", "5t", "6t", "7t", "8t", "9t", "10t", "11t", "12t", "13t", "14t", "15t", "16t", "17t", "18t", "19t", "20t", "21t"
 		]
+	},
+	arnold: {
+		name: 'Arnold Schwarzenegger',
+		title: 'place arnold',
+		description: 'Arnold Schwarzenegger placeholder image',
+		baseUrl: 'http://www.arnold.fun',
+		host: 'arnold.fun',
+		gaTrackingId: 'UA-110217086-4',
+		images: [
+			"1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "13a", "14a", "15a", "16a", "17a", "18a"
+		]
 	}
 };
