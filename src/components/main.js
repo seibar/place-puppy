@@ -54,7 +54,7 @@ class Main extends React.Component {
 					<div className="col">
 						<article>
 							<p>Serving all of your <strong>{tenant.description}</strong> needs, these images are free for you to use in your design or development projects.</p>
-						 	<p>If you need a simple placeholder image, choose either a <strong>random {tenant.name}</strong>, or your <strong>favorite {tenant.name}</strong>. Change the image size by modifying the width/height parameters on the URL as you need.</p>
+						 	<p>If you need a simple placeholder image, choose either a <strong>random {tenant.name}</strong> image, or your <strong>favorite {tenant.name}</strong> image. Change the image size by modifying the width/height parameters on the URL as you need.</p>
 						</article>
 					</div>
 				</div>

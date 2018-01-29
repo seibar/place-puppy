@@ -21,5 +21,16 @@ export default {
 		images: [
 			"1b", "2b", "3b", "4b", "5b", "6b", "7b", "8b", "9b", "10b", "11b", "12b", "13b", "14b", "15b", "16b", "17b", "18b", "19b", "20b", "21b", "22b"
 		]
+	},
+	trump: {
+		name: 'Trump',
+		title: 'place trump',
+		description: 'Donald Trump placeholder image',
+		baseUrl: 'http://www.placetrump.us',
+		host: 'placetrump.us',
+		gaTrackingId: 'UA-110217086-3',
+		images: [ 
+			"1t", "2t", "3t", "4t", "5t", "6t", "7t", "8t", "9t", "10t", "11t", "12t", "13t", "14t", "15t", "16t", "17t", "18t", "19t", "20t", "21t"
+		]
 	}
 };
