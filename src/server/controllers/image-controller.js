@@ -1,16 +1,17 @@
 import { ImageService, AnalyticsService, TenantService } from '../services';
 
 class ImageController {
-	constructor ({ maxAge = 86400 }) {
+	constructor ({ randomMaxAge = 5, defaultMaxAge = 60 * 60 * 24 }) {
 		this.imageService = new ImageService();
-		this.maxAge = maxAge;
+		this.randomMaxAge = randomMaxAge;
+		this.defaultMaxAge =  defaultMaxAge;
 	}
 
-	_isNotModified (req) {
+	_isNotModified (req, maxAge) {
 		const ifModifiedSince = new Date(req.get('If-Modified-Since'));
 		const now = new Date();
 		const age = now - ifModifiedSince;
-		if (age < this.maxAge * 1000) {
+		if (age < maxAge * 1000) {
 			return true;
 		}
 
@@ -23,10 +24,10 @@ class ImageController {
 		return Number.isInteger(width) && Number.isInteger(height);
 	}
 
-	_setHeaders (res) {
+	_setHeaders (res, maxAge) {
 		res.setHeader('Content-Type', 'image/jpeg');
-		res.setHeader('Cache-Control', ` max-age=${this.maxAge}, public`);
-		res.setHeader('Expires', new Date(Date.now() + this.maxAge * 1000).toUTCString());
+		res.setHeader('Cache-Control', ` max-age=${maxAge}, public`);
+		res.setHeader('Expires', new Date(Date.now() + maxAge * 1000).toUTCString());
 		res.setHeader('Last-Modified', new Date().toUTCString());
 	}
 
@@ -36,7 +37,7 @@ class ImageController {
 	}
 
 	async _getRandom (bucket, req, res) {
-		if (this._isNotModified(req)) {
+		if (this._isNotModified(req, this.randomMaxAge)) {
 			return res.sendStatus(304);
 		}
 
@@ -47,7 +48,7 @@ class ImageController {
 			return res.sendStatus(400);
 		}
 
-		this._setHeaders(res);
+		this._setHeaders(res, this.randomMaxAge);
 		const imageId = bucket[Math.floor(Math.random() * bucket.length)];
 
 		const tenant = TenantService.getTenant(req.hostname);
@@ -73,7 +74,7 @@ class ImageController {
 			return res.sendStatus(404);
 		}
 		
-		if (this._isNotModified(req)) {
+		if (this._isNotModified(req, this.defaultMaxAge)) {
 			return res.sendStatus(304);
 		}
 
@@ -95,7 +96,7 @@ class ImageController {
 			height
 		});
 
-		this._setHeaders(res);
+		this._setHeaders(res, this.defaultMaxAge);
 		const image = await this._fetchImage(imageId, width, height, res);
 		res.send(image);
 	}
