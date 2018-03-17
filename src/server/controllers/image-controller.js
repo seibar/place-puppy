@@ -1,10 +1,10 @@
 import { ImageService, AnalyticsService, TenantService } from '../services';
 
 class ImageController {
-	constructor ({ randomMaxAge = 5, defaultMaxAge = 60 * 60 * 24 }) {
+	constructor ({ randomMaxAge = 60, byIdMaxAge = 60 * 60 * 24 * 100 }) {
 		this.imageService = new ImageService();
 		this.randomMaxAge = randomMaxAge;
-		this.defaultMaxAge =  defaultMaxAge;
+		this.byIdMaxAge =  byIdMaxAge;
 	}
 
 	_isNotModified (req, maxAge) {
@@ -36,7 +36,7 @@ class ImageController {
 		return this.imageService.fetchImage(imageId, width, height);
 	}
 
-	async _getRandom (bucket, req, res) {
+	async _getRandomRedirect (bucket, req, res) {
 		if (this._isNotModified(req, this.randomMaxAge)) {
 			return res.sendStatus(304);
 		}
@@ -50,6 +50,9 @@ class ImageController {
 
 		this._setHeaders(res, this.randomMaxAge);
 		const imageId = bucket[Math.floor(Math.random() * bucket.length)];
+		if (!imageId) {
+			return res.sendStatus(500);
+		}
 
 		const tenant = TenantService.getTenant(req.hostname);
 		AnalyticsService.trackImageView({
@@ -62,8 +65,7 @@ class ImageController {
 			height
 		});
 
-		const image = await this._fetchImage(imageId, width, height, res);
-		res.send(image);
+		res.redirect(`/${imageId}/${width}/${height}`);
 	}
 
 	async _getById (bucket, req, res) {
@@ -74,7 +76,7 @@ class ImageController {
 			return res.sendStatus(404);
 		}
 		
-		if (this._isNotModified(req, this.defaultMaxAge)) {
+		if (this._isNotModified(req, this.byIdMaxAge)) {
 			return res.sendStatus(304);
 		}
 
@@ -96,7 +98,7 @@ class ImageController {
 			height
 		});
 
-		this._setHeaders(res, this.defaultMaxAge);
+		this._setHeaders(res, this.byIdMaxAge);
 		const image = await this._fetchImage(imageId, width, height, res);
 		res.send(image);
 	}
@@ -104,7 +106,7 @@ class ImageController {
 	async getRandom (req, res, next) {
 		try {
 			const tenant = TenantService.getTenant(req.hostname);
-			await this._getRandom(tenant.images, req, res);
+			await this._getRandomRedirect(tenant.images, req, res);
 		} catch (err) {
 			next(err);
 		}

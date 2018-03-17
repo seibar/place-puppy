@@ -13,7 +13,7 @@ const server = http.createServer(app);
 
 // Config
 const port = process.env.PORT || 3000;
-const randomMaxAge = process.env.RANDOM_MAX_AGE || 5;
+const randomMaxAge = process.env.RANDOM_MAX_AGE || 600;
 const publicPath = process.env.PUBLIC_PATH || 'public';
 
 const imageController = new ImageController({ randomMaxAge });
