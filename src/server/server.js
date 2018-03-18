@@ -13,10 +13,10 @@ const server = http.createServer(app);
 
 // Config
 const port = process.env.PORT || 3000;
-const maxAge = process.env.RANDOM_MAX_AGE || 60 * 60 * 24;
+const randomMaxAge = process.env.RANDOM_MAX_AGE || 600;
 const publicPath = process.env.PUBLIC_PATH || 'public';
 
-const imageController = new ImageController({ maxAge });
+const imageController = new ImageController({ randomMaxAge });
 
 process.on('uncaughtException', function(err) {
 	console.log('Caught exception: ' + err);

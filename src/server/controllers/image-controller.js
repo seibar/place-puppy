@@ -1,16 +1,17 @@
 import { ImageService, AnalyticsService, TenantService } from '../services';
 
 class ImageController {
-	constructor ({ maxAge = 86400 }) {
+	constructor ({ randomMaxAge = 60, byIdMaxAge = 60 * 60 * 24 * 100 }) {
 		this.imageService = new ImageService();
-		this.maxAge = maxAge;
+		this.randomMaxAge = randomMaxAge;
+		this.byIdMaxAge =  byIdMaxAge;
 	}
 
-	_isNotModified (req) {
+	_isNotModified (req, maxAge) {
 		const ifModifiedSince = new Date(req.get('If-Modified-Since'));
 		const now = new Date();
 		const age = now - ifModifiedSince;
-		if (age < this.maxAge * 1000) {
+		if (age < maxAge * 1000) {
 			return true;
 		}
 
@@ -23,10 +24,10 @@ class ImageController {
 		return Number.isInteger(width) && Number.isInteger(height);
 	}
 
-	_setHeaders (res) {
+	_setHeaders (res, maxAge) {
 		res.setHeader('Content-Type', 'image/jpeg');
-		res.setHeader('Cache-Control', ` max-age=${this.maxAge}, public`);
-		res.setHeader('Expires', new Date(Date.now() + this.maxAge * 1000).toUTCString());
+		res.setHeader('Cache-Control', ` max-age=${maxAge}, public`);
+		res.setHeader('Expires', new Date(Date.now() + maxAge * 1000).toUTCString());
 		res.setHeader('Last-Modified', new Date().toUTCString());
 	}
 
@@ -35,8 +36,8 @@ class ImageController {
 		return this.imageService.fetchImage(imageId, width, height);
 	}
 
-	async _getRandom (bucket, req, res) {
-		if (this._isNotModified(req)) {
+	async _getRandomRedirect (bucket, req, res) {
+		if (this._isNotModified(req, this.randomMaxAge)) {
 			return res.sendStatus(304);
 		}
 
@@ -47,8 +48,11 @@ class ImageController {
 			return res.sendStatus(400);
 		}
 
-		this._setHeaders(res);
+		this._setHeaders(res, this.randomMaxAge);
 		const imageId = bucket[Math.floor(Math.random() * bucket.length)];
+		if (!imageId) {
+			return res.sendStatus(500);
+		}
 
 		const tenant = TenantService.getTenant(req.hostname);
 		AnalyticsService.trackImageView({
@@ -61,8 +65,7 @@ class ImageController {
 			height
 		});
 
-		const image = await this._fetchImage(imageId, width, height, res);
-		res.send(image);
+		res.redirect(`/${imageId}/${width}/${height}`);
 	}
 
 	async _getById (bucket, req, res) {
@@ -73,7 +76,7 @@ class ImageController {
 			return res.sendStatus(404);
 		}
 		
-		if (this._isNotModified(req)) {
+		if (this._isNotModified(req, this.byIdMaxAge)) {
 			return res.sendStatus(304);
 		}
 
@@ -95,7 +98,7 @@ class ImageController {
 			height
 		});
 
-		this._setHeaders(res);
+		this._setHeaders(res, this.byIdMaxAge);
 		const image = await this._fetchImage(imageId, width, height, res);
 		res.send(image);
 	}
@@ -103,7 +106,7 @@ class ImageController {
 	async getRandom (req, res, next) {
 		try {
 			const tenant = TenantService.getTenant(req.hostname);
-			await this._getRandom(tenant.images, req, res);
+			await this._getRandomRedirect(tenant.images, req, res);
 		} catch (err) {
 			next(err);
 		}
