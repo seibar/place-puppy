@@ -45,7 +45,8 @@ app.get('/:id/:width/:height', (req, res, next) => imageController.getById(req, 
 
 // Error handling
 app.use(function (error, req, res, next) {
-	console.log(error);
+	const now = new Date();
+	console.log(`${now.toGMTString()} ${error}`);
 	return res.status(500).send('Error');
 });
 
