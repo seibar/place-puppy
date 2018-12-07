@@ -1,4 +1,7 @@
+import pkg from '../../package.json';
+
 export default ({ tenant, body }) => `
+<!-- version ${pkg.version} -->
 <!doctype html>
 <html lang="en">
 	<head>
