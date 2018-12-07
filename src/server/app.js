@@ -11,8 +11,9 @@ const app = express();
 // Config
 const randomMaxAge = process.env.RANDOM_MAX_AGE || 600;
 const publicPath = process.env.PUBLIC_PATH || 'public';
+const returnApiGatewayProxyResponse = process.env.RETURN_API_GATEWAY_PROXY_RESPONSE === 'true'
 
-const imageController = new ImageController({ randomMaxAge });
+const imageController = new ImageController({ randomMaxAge, returnApiGatewayProxyResponse });
 
 process.on('uncaughtException', function(err) {
 	console.log('Caught exception: ' + err);

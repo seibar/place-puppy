@@ -1,10 +1,11 @@
 import { ImageService, AnalyticsService, TenantService } from '../services';
 
 class ImageController {
-	constructor ({ randomMaxAge = 60, byIdMaxAge = 60 * 60 * 24 * 100 }) {
+	constructor ({ randomMaxAge = 60, byIdMaxAge = 60 * 60 * 24 * 100, returnApiGatewayProxyResponse = false }) {
 		this.imageService = new ImageService();
 		this.randomMaxAge = randomMaxAge;
 		this.byIdMaxAge =  byIdMaxAge;
+		this.returnApiGatewayProxyResponse = returnApiGatewayProxyResponse;
 	}
 
 	_isNotModified (req, maxAge) {
@@ -31,9 +32,22 @@ class ImageController {
 		res.setHeader('Last-Modified', new Date().toUTCString());
 	}
 
-	_fetchImage (imageId, width, height, res) {
+	async _fetchImage (imageId, width, height, res) {
 		res.setHeader('id', imageId);
-		return this.imageService.fetchImage(imageId, width, height);
+		const image = this.imageService.fetchImage(imageId, width, height);
+
+		if (this.returnApiGatewayProxyResponse) {
+			// API gateway expects binary responses to be base64 encoded.
+			const encoded = new Buffer(await image).toString('base64');
+			return {
+				Status: 200,
+				Headers: { 'content-type': 'image/jpeg' },
+				Body: encoded,
+				IsBase64Encoded: true
+			};
+		} else {
+			return await image;
+		}
 	}
 
 	async _getRandomRedirect (bucket, req, res) {
