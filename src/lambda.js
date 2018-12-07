@@ -1,6 +1,9 @@
 import awsServerlessExpress from 'aws-serverless-express';
 import app from './server/app';
 
+const pkg = require('./package.json');
+app.locals.version = pkg.version;
+
 app.use(function (req, res, next) {
 	res.set('x-engine', 'lambda');
 	next();

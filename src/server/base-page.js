@@ -1,7 +1,5 @@
-import pkg from '../../package.json';
-
-export default ({ tenant, body }) => `
-<!-- version ${pkg.version} -->
+export default ({ tenant, body, version }) => `
+<!-- version ${version} -->
 <!doctype html>
 <html lang="en">
 	<head>

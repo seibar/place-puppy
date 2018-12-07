@@ -30,9 +30,10 @@ app.use('/public', express.static(publicPath));
 app.get('/', (req, res) => {
 	const tenant = TenantService.getTenant(req.hostname);
 	const body = ReactDOMServer.renderToString(<Main tenant={tenant} />);
+	const version = app.locals.version;
 
 	return res.status(200).send(
-		basePage({ tenant, body })
+		basePage({ tenant, body, version })
 	);
 });
 
