@@ -1,6 +1,6 @@
 {
   "name": "place-puppy",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/server/server.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "build:server": "babel src --ignore src/client/**/* --out-dir dist && cp package.json dist && npm install --only=production --prefix dist",
     "clean": "rm -rf dist",
     "start": "concurrently --kill-others \"webpack --watch\" \"AWS_PROFILE=place-puppy PUBLIC_PATH=dist/public babel-watch ./src/local-server.js\"",
-	"install": "find ./node_modules/* -mtime +10950 -exec touch {} \\;",
-	"package": "zip -r ./dist/dist.zip dist"
+    "install": "find ./node_modules/* -mtime +10950 -exec touch {} \\;",
+    "package": "zip -r ./dist/dist.zip dist"
   },
   "author": "AJ Rabe <aj.rabe@gmail.com>",
   "license": "MIT",
