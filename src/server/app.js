@@ -1,4 +1,3 @@
-import http from 'http';
 import express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -6,13 +5,10 @@ import basePage from './base-page';
 import Main from '../components/main';
 import { ImageController } from './controllers';
 import { TenantService } from './services';
-import tenants from './tenants';
 
 const app = express();
-const server = http.createServer(app);
 
 // Config
-const port = process.env.PORT || 3000;
 const randomMaxAge = process.env.RANDOM_MAX_AGE || 600;
 const publicPath = process.env.PUBLIC_PATH || 'public';
 
@@ -50,5 +46,4 @@ app.use(function (error, req, res, next) {
 	return res.status(500).send('Error');
 });
 
-server.listen(port);
-console.log(`Listening at http://localhost:${port}`);
+export default app;
