@@ -1,6 +1,6 @@
 {
   "name": "place-puppy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "dist/server/server.js",
   "scripts": {
@@ -10,12 +10,11 @@
     "clean": "rm -rf dist",
     "start": "concurrently --kill-others \"webpack --watch\" \"AWS_PROFILE=place-puppy PUBLIC_PATH=dist/public babel-watch ./src/local-server.js\"",
     "install": "find ./node_modules/* -mtime +10950 -exec touch {} \\;",
-	"package": "zip -r ./dist/place-puppy-$npm_package_version.zip dist",
-
-	"postversion": "git push && git push --tags",
-	"deploy": "npm version patch && npm run build && npm run package && npm run deploy:package && npm run deploy:lambda",
-	"deploy:package": "aws s3 cp ./dist/place-puppy-$npm_package_version.zip s3://place-puppy-mgmt/artifacts/place-puppy-$npm_package_version.zip",
-	"deploy:lambda": "aws lambda update-function-code --function-name place-puppy --s3-bucket place-puppy-mgmt --s3-key artifacts/place-puppy-$npm_package_version.zip"
+    "package": "zip -r ./dist/place-puppy-$npm_package_version.zip dist",
+    "postversion": "git push && git push --tags",
+    "deploy": "npm version patch && npm run build && npm run package && npm run deploy:package && npm run deploy:lambda",
+    "deploy:package": "aws s3 cp ./dist/place-puppy-$npm_package_version.zip s3://place-puppy-mgmt/artifacts/place-puppy-$npm_package_version.zip",
+    "deploy:lambda": "aws lambda update-function-code --function-name place-puppy --s3-bucket place-puppy-mgmt --s3-key artifacts/place-puppy-$npm_package_version.zip"
   },
   "author": "AJ Rabe <aj.rabe@gmail.com>",
   "license": "MIT",
