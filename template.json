@@ -1,0 +1,153 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Resources": {
+		"ApiGatewayApi": {
+			"Type": "AWS::ApiGateway::RestApi",
+			"Properties": {
+				"Name": "place-puppy2",
+				"BinaryMediaTypes": ["image/jpeg"]
+			}
+		},
+		"ApiGatewayImageResource": {
+			"Type": "AWS::ApiGateway::Resource",
+			"Properties": {
+				"PathPart": "image",
+				"ParentId": {
+					"Fn::GetAtt": [
+						"ApiGatewayApi", "RootResourceId"
+					]
+				},
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+		"ApiGatewayImageProxyResource": {
+			"Type": "AWS::ApiGateway::Resource",
+			"Properties": {
+				"PathPart": "{proxy+}",
+				"ParentId": {
+					"Ref": "ApiGatewayImageResource"
+				},
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+		"ApiGatewayImageProxyAnyMethod": {
+			"Type": "AWS::ApiGateway::Method",
+			"Properties": {
+				"AuthorizationType": "NONE",
+				"HttpMethod": "ANY",
+				"Integration": {
+					"Type": "AWS_PROXY",
+					"IntegrationHttpMethod": "POST",
+					"Uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:061636439173:function:place-puppy/invocations"
+				},
+				"ResourceId": {
+					"Ref": "ApiGatewayImageProxyResource"
+				},
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+		"ApiGatewayRootProxyResource": {
+			"Type": "AWS::ApiGateway::Resource",
+			"Properties": {
+				"PathPart": "{proxy+}",
+				"ParentId": {
+					"Fn::GetAtt": [
+						"ApiGatewayApi", "RootResourceId"
+					]
+				},
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+
+		"ApiGatewayRootProxyAnyMethod": {
+			"Type": "AWS::ApiGateway::Method",
+			"Properties": {
+				"AuthorizationType": "NONE",
+				"HttpMethod": "ANY",
+				"Integration": {
+					"Type": "HTTP_PROXY",
+					"Uri": {
+						"Fn::Join": [
+							"", [
+								"https://",
+								{ "Ref": "ApiGatewayApi" },
+								".execute-api.",
+								{ "Ref": "AWS::Region" },
+								".amazonaws.com/prod/image/{proxy}"
+							]
+						]
+					},
+					"IntegrationHttpMethod": "ANY",
+					"RequestParameters": {
+						"integration.request.path.proxy": "method.request.path.proxy",
+						"integration.request.header.Accept": "'image/jpeg'"
+					},
+					"IntegrationResponses": [{
+						"StatusCode": "200"
+					}],
+					"CacheKeyParameters": [
+						"method.request.path.proxy"
+					]
+				},
+				"RequestParameters": {
+					"method.request.path.proxy": true
+				},
+				"ResourceId": {
+					"Ref": "ApiGatewayRootProxyResource"
+				},
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+		"ApiGatewayDeployment": {
+			"Type": "AWS::ApiGateway::Deployment",
+			"DependsOn": ["ApiGatewayRootProxyAnyMethod", "ApiGatewayImageProxyAnyMethod"],
+			"Properties": {
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+		"ApiGatewayStage": {
+			"Type": "AWS::ApiGateway::Stage",
+			"Properties": {
+				"DeploymentId": {
+					"Ref": "ApiGatewayDeployment"
+				},
+				"StageName": "prod",
+				"RestApiId": {
+					"Ref": "ApiGatewayApi"
+				}
+			}
+		},
+		"PlacePuppyLambdaApiGatewayPermission": {
+			"Type": "AWS::Lambda::Permission",
+			"Properties": {
+				"FunctionName": "arn:aws:lambda:us-east-1:061636439173:function:place-puppy",
+				"Action": "lambda:InvokeFunction",
+				"Principal": "apigateway.amazonaws.com",
+				"SourceArn": { 
+					"Fn::Join": [ 
+						"", 
+						[
+							"arn:aws:execute-api:",
+							{ "Ref": "AWS::Region" }, ":",
+							{ "Ref": "AWS::AccountId" }, ":",
+							{ "Ref": "ApiGatewayApi" },
+							"/*/*/*"
+						] 
+					] 
+				}
+			}
+		}
+	}
+}
