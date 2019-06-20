@@ -38,12 +38,12 @@ class ImageController {
 
 		if (this.returnApiGatewayProxyResponse) {
 			// API gateway expects binary responses to be base64 encoded.
-			const encoded = new Buffer(await image).toString('base64');
+			const encoded = (await image).toString('base64');
 			return {
-				Status: 200,
-				Headers: { 'content-type': 'image/jpeg' },
-				Body: encoded,
-				IsBase64Encoded: true
+				statusCode: 200,
+				headers: { 'content-type': 'image/jpeg' },
+				body: encoded,
+				isBase64Encoded: true
 			};
 		} else {
 			return await image;

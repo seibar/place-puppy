@@ -16,6 +16,7 @@ class ImageService {
 		const s3 = this._getS3();
 
 		return new Promise((resolve, reject) => {
+			console.log(S3_BUCKET, filename);
 			s3.getObject({
 				Bucket: S3_BUCKET,
 				Key: filename
