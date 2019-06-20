@@ -1,9 +1,11 @@
-# [www.placepuppy.net](http://www.placepuppy.net)
+## build
 
-[![CircleCI](https://circleci.com/gh/seibar/place-puppy.svg?style=svg)](https://circleci.com/gh/seibar/place-puppy)
+```
+GOARCH=amd64 GOOS=linux go build -o bin/lambda server/lambda/main.go
+```
 
-## start up
+## package
 
-```bash
-AWS_ACCESS_KEY_ID=<aws-access-id> AWS_SECRET_ACCESS_KEY=<aws-secret-key> PORT=8080 node dist/server.js
+```
+zip -j bin/lambda.zip bin/*
 ```
